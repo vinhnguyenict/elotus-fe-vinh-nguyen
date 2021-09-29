@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { lazy, Suspense } from 'react'
+import { Router, Route, Switch } from 'react-router-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import "./App.css"
+import PageLoad from './components/PageLoader'
+
+import history from './utils/historyHistory'
+
+const Home = lazy(() => import('./views/Home'))
+const NotFound = lazy(() => import('./views/NotFound'))
+
+const App: React.FC = () => {
+    return (
+        <Router history={history}>
+            <Suspense fallback={<PageLoad />}>
+                <Switch>
+                    <Route path="/" exact>
+                        <Home />
+                    </Route>
+
+                    {/* 404 */}
+                    <Route component={NotFound} />
+                </Switch>
+            </Suspense>
+        </Router>
+    )
 }
 
-export default App;
+export default React.memo(App)
